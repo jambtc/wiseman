@@ -1,5 +1,5 @@
 <?php
-use Config;
+// use Config;
 
 use App\Http\Controllers\BotManController;
 use Botman\BotMan\Messages\Attachments\Audio;
@@ -14,6 +14,8 @@ use App\Conversations\ButtonConversation;
 use App\Middleware\ReceivedMiddleware;
 use App\Middleware\HeardMiddleware;
 use App\Middleware\SendingMiddleware;
+
+
 
 
 $botman = resolve('botman');
@@ -52,7 +54,12 @@ $botman->hears('Come stai', function ($bot) {
 
 $botman->hears('Che tempo fa (.*) {location}', function ($bot, $location) {
     $apikey = Config::get('botman.config.openweather_key');
-    $url = 'https://api.openweathermap.org/data/2.5/weather?q='.urlencode($location).'&appid='.$apikey.'&lang=it';
+
+    // echo '<pre>'.print_r($apikey,true);exit;
+    $url = 'https://api.openweathermap.org/data/2.5/weather?q='
+        .urlencode($location)
+        .'&appid='.$apikey
+        .'&lang=it';
 
     $response = json_decode(file_get_contents($url));
     $array = $response->weather[0];
@@ -136,8 +143,27 @@ $botman->hears('conversiamo(.*)', function ($bot) {
 });
 
 
-$botman->hears('help|aiuto', function($bot) {
+$botman->hears('help|aiuto|guida', function($bot) {
+    $guida = [
+        // 'come ti chiami',
+        // 'Hi',
+        // 'hello',
+        // 'ciao',
+        // 'buongiorno',
+        // 'how are you',
+        // 'come stai',
+        'che tempo fa a {location}',
+        '/gif {nome}',
+        '/video',
+        // 'il mio nome è {nome}',
+        // 'dimmi il mio nome',
+        // 'mi chiamo {nome}',
+        'survey',
+        'conversiamo'
+
+    ];
     $bot->reply('Questa è la tua guida. Segui queste istruzioni...');
+    $bot->reply('<pre>'.print_r($guida,true).'</pre>');
 })->skipsConversation();
 
 $botman->hears('stop|ferma', function($bot) {
